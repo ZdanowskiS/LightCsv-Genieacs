@@ -5,15 +5,16 @@ can be used as testing enviroment or starting point for integration of other dat
 # Usage
 Add ext and provisioning in Genieacs.
 
-Configure Apache2 for LightCsv-Genieacs and set Genieacs IP in
-configuration.ini.
-Apahe2 requires:
+Configure Apache2 for LightCsv-Genieacs. 
+VirtualHost has to enable RewriteEngine:
 ```
 RewriteEngine On
 RewriteCond %{HTTP:Authorization} ^(.*)
 RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
 FallbackResource /index.php
 ```
+LightCsv-Genieacs requires Genieacs IP in configuration.ini.
+
 Ext script requires http address from which to get configuration. 
 
 Add configuration file with device serial or ID as name. 
