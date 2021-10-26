@@ -7,7 +7,13 @@ Add ext and provisioning in Genieacs.
 
 Configure Apache2 for LightCsv-Genieacs and set Genieacs IP in
 configuration.ini.
-
+Apahe2 requires:
+```
+RewriteEngine On
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+FallbackResource /index.php
+```
 Ext script requires http address from which to get configuration. 
 
 Add configuration file with device serial or ID as name. 
