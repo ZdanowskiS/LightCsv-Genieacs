@@ -7,8 +7,20 @@ function parseURI()
     {
         $result['type']='genieacs';
     }
-    $result['uri']=preg_replace('/[^a-z]/', '',$tmp[1]);
-    $result['id']=intval($tmp[2]);
+    if($tmp[0]=='gui')
+    {
+        $result['type']='gui';
+    }
+
+    if(array_key_exists(1,$tmp))
+        $result['uri']=preg_replace('/[^a-z]/', '',$tmp[1]);
+    else
+        $result['uri']='';
+
+    if(array_key_exists(2,$tmp))
+        $result['id']=$tmp[2];
+    else
+        $result['id']='';
 
     return $result;
 }
@@ -22,12 +34,21 @@ require_once "./lib/LCsvGenieacsApi.class.php";
 require_once "./lib/LCsvGenieacs.class.php";
 require_once "./lib/LCPE.class.php";
 require_once "./lib/LCsvGenieacsServer.class.php";
+require_once "./lib/LCsvGuiServer.class.php";
 
 $route=parseURI();
 
 if($route['type']=='genieacs')
 {
     $GENIESERVER = new LCsvGenieacsServer();
+
+    $result = $GENIESERVER->execute($_SERVER['REQUEST_METHOD'], $route['type'], $route['uri'], $_SERVER['HTTP_AUTHORIZATION'], $route['id']);
+
+    echo $result;
+}
+if($route['type']=='gui')
+{
+    $GENIESERVER = new LCsvGuiServer();
 
     $result = $GENIESERVER->execute($_SERVER['REQUEST_METHOD'], $route['type'], $route['uri'], $_SERVER['HTTP_AUTHORIZATION'], $route['id']);
 

@@ -9,6 +9,64 @@ class LCsvGenieacs{
 		$this->connection= new LCsvGenieacsApi();
 	}
 
+    public function existsFile($name)
+    {
+        global $CONFIG;
+
+        if(file_exists($CONFIG['general']['cpedir'].$name.'.csv'))
+            return TRUE;
+        else
+            return FALSE;
+    }
+
+    public function writeFile($name,$lines)
+    {
+        global $CONFIG;
+
+        $fout = fopen($CONFIG['general']['cpedir'].$name.'.csv', 'w');
+        foreach ($lines as $line) {
+            fputcsv($fout, $line,';');
+        }
+        fclose($fout);
+
+        return;
+    }
+
+    public function createFile($name, $key, $value)
+    {
+        $lines[]=array("setdata","setParameterValues","parameterNames",$key,$value);
+        $this->writeFile($name,$lines);
+
+        return;
+    }
+
+    public function updateFile($name, $key, $value)
+    {
+        global $CONFIG;
+
+        $handle=fopen($CONFIG['general']['cpedir'].$name.'.csv','r');
+
+        $lines;
+        $found=FALSE;
+        while(($data = fgetcsv($handle,1000,";")) !== FALSE)
+        {
+            if($data[3]==$key)
+            {
+                $data[4]=$value;
+                $found=TRUE;
+            }
+            $lines[]=array($data[0],$data[1],$data[2],$data[3],$data[4]);
+        }
+        fclose($handle);
+
+        if(!$found)
+            $lines[]=array("setdata","setParameterValues","parameterNames",$key,$value);
+
+        $this->writeFile($name,$lines);
+
+        return;
+    }
+
     public function renameFile($serial, $uid)
     {
         global $CONFIG;
