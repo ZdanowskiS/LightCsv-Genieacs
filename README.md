@@ -40,6 +40,11 @@ After checking host recives JSON from php://input and responds with propper JSON
 
 Cals Genieacs using CURL to execute tasks. Sending configuration requires device ID not serial.
 
+* Light CSV Gui Server
+
+Enables writing changes to files using [GenieACS-QT-smallGUI](https://github.com/ZdanowskiS/GenieACS-QT-smallGUI).
+This makes settings reload to CPE after reset.
+
 * ext/get_fileconfig
 
 Script on Genieacs backend that calls Light CSV Configuration for CPE configuration. Data passed depend on porvision settings. At minimum it requires device Serial. However for two way consiguration device ID is required.
