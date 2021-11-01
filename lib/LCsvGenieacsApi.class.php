@@ -119,7 +119,6 @@ class LCsvGenieacsApi {
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 
 		$result = curl_exec($curl);
-
 		return json_decode($result,1);
 	}
 

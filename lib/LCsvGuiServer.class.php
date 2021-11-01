@@ -48,7 +48,7 @@ class LCsvGuiServer extends LCsvGenieacs {
 	public function CheckToken()
 	{
         $result=FALSE;
-        $this->hostid=$this->GetHostByToken($this->token);
+        $this->hostid=$this->getHostByToken($this->token);
 
         if($this->hostid)
             $result=TRUE;
@@ -73,11 +73,12 @@ class LCsvGuiServer extends LCsvGenieacs {
         switch($this->uri) {
             case 'setconfiguration':
 
-                if($this->existsFile($this->id))
-                    $this->updateFile($this->id,$input->{'parameterValues'}[0][0], $input->{'parameterValues'}[0][1]);
+                if($this->existsCPE($this->id))
+                    $this->updateCPE($this->id,$input->{'parameterValues'}[0][0], $input->{'parameterValues'}[0][1]);
                 else
-                    $this->createFile($this->id,$input->{'parameterValues'}[0][0], $input->{'parameterValues'}[0][1]);
-                    $result='ok';
+                    $this->createCPE($this->id,$input->{'parameterValues'}[0][0], $input->{'parameterValues'}[0][1]);
+
+                $result='ok';
 			    return json_encode($result);
 			default:
 				return '400 Bad Request';

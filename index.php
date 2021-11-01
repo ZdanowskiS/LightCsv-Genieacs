@@ -7,9 +7,12 @@ function parseURI()
     {
         $result['type']='genieacs';
     }
-    if($tmp[0]=='gui')
+    elseif($tmp[0]=='gui')
     {
         $result['type']='gui';
+    }
+    else{
+        $result['type']='';
     }
 
     if(array_key_exists(1,$tmp))
@@ -30,8 +33,10 @@ define('CONFIG_FILE', $CONFIG_FILE);
 
 $CONFIG = (array) parse_ini_file(CONFIG_FILE, true);
 
-require_once "./lib/LCsvGenieacsApi.class.php";
+require_once "./lib/LCsvGenieacsInterface.php";
+
 require_once "./lib/LCsvGenieacs.class.php";
+require_once "./lib/LCsvGenieacsApi.class.php";
 require_once "./lib/LCPE.class.php";
 require_once "./lib/LCsvGenieacsServer.class.php";
 require_once "./lib/LCsvGuiServer.class.php";
@@ -46,7 +51,7 @@ if($route['type']=='genieacs')
 
     echo $result;
 }
-if($route['type']=='gui')
+elseif($route['type']=='gui')
 {
     $GENIESERVER = new LCsvGuiServer();
 
@@ -65,13 +70,13 @@ else
             die();
         }
     }
-    elseif($_GET['cpeid'])
+    elseif(array_key_exists('cpeid',$_GET))
     {
         $id=str_replace('.csv','',$_GET['cpeid']);
         $LCPE = new LCPE($id);
         $LCPE->ExecuteAction();
     }
-    elseif($_GET['remove'])
+    elseif(array_key_exists('remove',$_GET))
     {
         if(!unlink($CONFIG['general']['cpedir'].$_GET['remove']))
         {

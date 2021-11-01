@@ -95,7 +95,7 @@ class LCPE extends LCsvGenieacs {
 
     public function ExecuteAction()
     {
-        $task_array = $this->GetActionTasks($this->deviceid);
+        $task_array = $this->getActionTasks($this->deviceid);
 
 		if($task_array)foreach($task_array as $task)
 		{

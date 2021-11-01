@@ -1,6 +1,6 @@
 <?php
 
-class LCsvGenieacsServer extends LCPE {
+class LCsvGenieacsServer extends LCsvGenieacs {
 
 	private $method;
 	private $uri;
@@ -48,7 +48,7 @@ class LCsvGenieacsServer extends LCPE {
 	public function CheckToken()
 	{
         $result=FALSE;
-        $this->hostid=$this->GetHostByToken($this->token);
+        $this->hostid=$this->getHostByToken($this->token);
 
         if($this->hostid)
             $result=TRUE;
@@ -81,7 +81,7 @@ class LCsvGenieacsServer extends LCPE {
 		switch($this->uri) {
 			case 'actionnodeadd':
 
-                $this->renameFile($input->{'serial'},$input->{'cpeid'});
+                $this->renameCPE($input->{'serial'},$input->{'cpeid'});
                 $tasklist = $this->GetActionTasks($input->{'cpeid'});
 
 			    return json_encode($tasklist);

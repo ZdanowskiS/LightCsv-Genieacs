@@ -1,25 +1,11 @@
 <?php
 
-class LCsvGenieacs{
-
-	public $connection;
+class LCsvGenieacs implements LCsvGenieacsInterface {
 
 	public function __construct() { 
-
-		$this->connection= new LCsvGenieacsApi();
 	}
 
-    public function existsFile($name)
-    {
-        global $CONFIG;
-
-        if(file_exists($CONFIG['general']['cpedir'].$name.'.csv'))
-            return TRUE;
-        else
-            return FALSE;
-    }
-
-    public function writeFile($name,$lines)
+    private function writeFile($name,$lines)
     {
         global $CONFIG;
 
@@ -32,7 +18,17 @@ class LCsvGenieacs{
         return;
     }
 
-    public function createFile($name, $key, $value)
+    public function existsCPE($name)
+    {
+        global $CONFIG;
+
+        if(file_exists($CONFIG['general']['cpedir'].$name.'.csv'))
+            return TRUE;
+        else
+            return FALSE;
+    }
+
+    public function createCPE($name, $key, $value)
     {
         $lines[]=array("setdata","setParameterValues","parameterNames",$key,$value);
         $this->writeFile($name,$lines);
@@ -40,7 +36,7 @@ class LCsvGenieacs{
         return;
     }
 
-    public function updateFile($name, $key, $value)
+    public function updateCPE($name, $key, $value)
     {
         global $CONFIG;
 
@@ -67,13 +63,13 @@ class LCsvGenieacs{
         return;
     }
 
-    public function renameFile($serial, $uid)
+    public function renameCPE($serial, $uid)
     {
         global $CONFIG;
 
-        if(file_exists($CONFIG['general']['cpedir'].$serial.'.csv'))
+        if($this->existsCPE($serial))
         {
-            if(file_exists($CONFIG['general']['cpedir'].$uid.'.csv'))
+            if($this->existsCPE($uid))
             {
                 unlink($CONFIG['general']['cpedir'].$uid.'.csv');
             }
@@ -82,11 +78,11 @@ class LCsvGenieacs{
         return;
     }
 
-    public function GetActionTasks($id)
+    public function getActionTasks($id)
     {
         global $CONFIG;
 
-        if(file_exists($CONFIG['general']['cpedir'].$id.'.csv')){
+        if($this->existsCPE($id)){
             $handle=fopen($CONFIG['general']['cpedir'].$id.'.csv','r');
         }else {
             die("File does not exists.");
@@ -104,7 +100,7 @@ class LCsvGenieacs{
         return $result;
     }
 
-    public function GetHostByToken($token)
+    public function getHostByToken($token)
     {
         global $CONFIG;
 
