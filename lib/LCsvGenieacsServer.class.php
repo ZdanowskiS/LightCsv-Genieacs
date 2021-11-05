@@ -9,13 +9,21 @@ class LCsvGenieacsServer extends LCsvGenieacs {
 
     private $hostid;
 
-	public function execute($method, $type, $uri, $token, $id)
-	{
-		$this->method=$method;
-		$this->uri=$uri;
-		$this->id=$id;
+    public static function addServer()
+    {
+        $result=array('class' => 'LCsvGenieacsServer',
+                        'function' => 'execute',
+                        'name' => 'genieacs');
+        return $result;
+    }
 
-		$this->token=$token;
+	public function execute($data)
+	{
+		$this->method=$data['method'];
+		$this->uri=$data['uri'];
+		$this->id=$data['id'];
+
+		$this->token=$data['token'];
 
 		if($this->token)
 		{

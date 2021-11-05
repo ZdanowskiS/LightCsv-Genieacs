@@ -1,19 +1,11 @@
 <?php
+
 function parseURI()
 {
     $uri=ltrim($_SERVER['REQUEST_URI'],'/');
     $tmp=explode('/',$uri);
-    if($tmp[0]=='genieacs')
-    {
-        $result['type']='genieacs';
-    }
-    elseif($tmp[0]=='gui')
-    {
-        $result['type']='gui';
-    }
-    else{
-        $result['type']='';
-    }
+
+    $result['type']=$tmp[0];
 
     if(array_key_exists(1,$tmp))
         $result['uri']=preg_replace('/[^a-z]/', '',$tmp[1]);
@@ -32,32 +24,27 @@ $CONFIG_FILE ='configuration.ini';
 define('CONFIG_FILE', $CONFIG_FILE);
 
 $CONFIG = (array) parse_ini_file(CONFIG_FILE, true);
+require_once "./lib/Hook.class.php";
 
 require_once "./lib/LCsvGenieacsInterface.php";
 
 require_once "./lib/LCsvGenieacs.class.php";
 require_once "./lib/LCsvGenieacsApi.class.php";
 require_once "./lib/LCPE.class.php";
-require_once "./lib/LCsvGenieacsServer.class.php";
-require_once "./lib/LCsvGuiServer.class.php";
+
+require_once "./lib/loadServers.php";
+
+$hooks=new Hooks();
 
 $route=parseURI();
 
-if($route['type']=='genieacs')
+if($hooks->existsServer($route['type']))
 {
-    $GENIESERVER = new LCsvGenieacsServer();
-
-    $result = $GENIESERVER->execute($_SERVER['REQUEST_METHOD'], $route['type'], $route['uri'], $_SERVER['HTTP_AUTHORIZATION'], $route['id']);
-
-    echo $result;
-}
-elseif($route['type']=='gui')
-{
-    $GENIESERVER = new LCsvGuiServer();
-
-    $result = $GENIESERVER->execute($_SERVER['REQUEST_METHOD'], $route['type'], $route['uri'], $_SERVER['HTTP_AUTHORIZATION'], $route['id']);
-
-    echo $result;
+    $data['method']=$_SERVER['REQUEST_METHOD'];
+    $data['uri']=$route['uri'];
+    $data['id']=$route['id'];
+    $data['token']=$_SERVER['HTTP_AUTHORIZATION'];
+    $hooks->execute($route['type'],$data);
 }
 else
 {
