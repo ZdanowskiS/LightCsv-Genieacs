@@ -1,9 +1,10 @@
 # LightCsv-Genieacs
 Light CSV to Genieacs
+
 This solution is ment as an example, how to pass data to Genieacs. It
-can be used as testing enviroment or starting point for integration of other data sources for Genieacs.
+can be used as testing environment or starting point for integration of other data sources for GenieACS.
 # Usage
-Add ext and provisioning in Genieacs.
+Add ext and provisioning to GenieACS.
 
 Configure Apache2 for LightCsv-Genieacs. 
 VirtualHost has to enable RewriteEngine:
@@ -15,7 +16,7 @@ FallbackResource /index.php
 ```
 LightCsv-Genieacs requires Genieacs IP in configuration.ini.
 
-Ext script requires http address from which to get configuration. 
+Ext script requires http address and token to get configuration from LightCsv-Genieacs. 
 
 Add configuration file with device serial or ID as name. 
 Example can be found in cpe directory. However each model may use
@@ -25,30 +26,36 @@ After file name gets changed from serial to device ID, it can be
 executed from web page.
 
 # Elements
-* Light CSV Genieacs
+### 1. Light CSV Genieacs
 
-Base class for communication with local data source. Whether its database file or another REST.
+Base class for communication with local data source. Whether its database, file or another REST.
+Replacing this class should be enough to pass data from other data source to GenieACS.
 
-Checking hosts is limited to pre-set token, assuming connection betwean system and Genieacs is secure.
+- Checking hosts limits communication to system with pre-set token. At the same time communication works with assumption it is secure in internal network.
+- Used file operations should be replaced by equivalet actions on user data source. 
+  - Reading configuration
+  - Creating new configuration
+  - Adding to configuration
+  - Updating configuration  
 
-* Light CSV Genieacs Server
+### 2. Light CSV Genieacs Server
 
 Responds to Genieacs calls issued from ext/get_fileconfig/
-After checking host recives JSON from php://input and responds with propper JSON. 
+After checking host token, we can read JSON from php://input and respond with propper JSON. 
 
-* Light CSV Genieacs Api
+### 3. Light CSV Genieacs Api
 
 Cals Genieacs using CURL to execute tasks. Sending configuration requires device ID not serial.
 
-* Light CSV Gui Server
+### 4. Light CSV GUI Server
 
-Enables writing changes to files using [GenieACS-QT-smallGUI](https://github.com/ZdanowskiS/GenieACS-QT-smallGUI).
-This makes settings reload to CPE after reset.
+Enables writing changes to configuration files using [GenieACS-QT-smallGUI](https://github.com/ZdanowskiS/GenieACS-QT-smallGUI).
+On its own GenieACS-QT-smallGUI would change CPE configuration, without ability to reload it after factory reset
 
-* ext/get_fileconfig
+### 5. ext/get_fileconfig
 
-Script on Genieacs backend that calls Light CSV Configuration for CPE configuration. Data passed depend on porvision settings. At minimum it requires device Serial. However for two way consiguration device ID is required.
+Script on Genieacs backend that calls Light CSV for CPE configuration. Data passed depend on porvision settings. At minimum it requires device Serial. However for two way communication device ID is required.
 
-* provision/getconfig
+### 6. provision/getconfig
 
-Genieacs provisioning called by propper presets. It should be rune only after device bootstrap. This in turn may require propper conditions based on tags.
+Genieacs provisioning called by propper presets. It should be run only after device bootstrap. This in turn may require propper conditions based on tags.
