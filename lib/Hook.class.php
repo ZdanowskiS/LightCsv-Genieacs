@@ -32,7 +32,7 @@ class Hooks {
         {
             $obj= new $elem['class']();
             $fname=$elem['function'];
-            $obj->$fname($data);
+            return $obj->$fname($data);
         }
     }
 

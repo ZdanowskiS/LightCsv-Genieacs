@@ -44,7 +44,7 @@ if($hooks->existsServer($route['type']))
     $data['uri']=$route['uri'];
     $data['id']=$route['id'];
     $data['token']=$_SERVER['HTTP_AUTHORIZATION'];
-    $hooks->execute($route['type'],$data);
+    print $hooks->execute($route['type'],$data);
 }
 else
 {
