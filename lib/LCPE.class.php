@@ -1,27 +1,23 @@
 <?php
 
-class LCPE extends LCsvGenieacs {
+class LCPE extends LCsvGenieacs implements LCPEInterface{
 
-    private $deviceid;
-    private $node;
+    protected $deviceid;
+    protected $node;
 
     public $connection;
 
-	public function __construct($id=0) {
+	public function __construct(&$connection,$deviceid=0) {
 
-		$this->connection= new LCsvGenieacsApi();
+		$this->connection= &$connection;
 
-        if($id)
-            $this->init($id);
+        if($deviceid)
+            $this->init($deviceid);
     }
 
-    public function init($id)
+    public function init($deviceid)
     {
-        global $CONFIG;
-
-        $this->deviceid=$id;
-
-        $this->connection->setURL($CONFIG['general']['ip']);
+        $this->deviceid=$deviceid;
 
         return;
     }
@@ -34,6 +30,11 @@ class LCPE extends LCsvGenieacs {
     public function DelTag($tag)
     {
         $this->connection->DelTag($this->deviceid, $tag);
+    }
+
+    public function DelDevice()
+    {
+        $this->connection->DelDevice($this->deviceid);
     }
 
     public function RefreshObject($param)
@@ -51,6 +52,11 @@ class LCPE extends LCsvGenieacs {
         return $this->connection->GetDeviceById($this->deviceid);
     }
 
+    public function GetFaults()
+    {
+		return $this->connection->GetFaults($this->deviceid);
+    }
+
     public function Download($filename)
     {
         return $this->connection->Download($this->deviceid, $filename);
@@ -61,34 +67,32 @@ class LCPE extends LCsvGenieacs {
         return $this->connection->Reboot($this->deviceid);
     }
 
-    public function factoryReset()
+    public function FactoryReset()
     {
-        return $this->connection->factoryReset($this->deviceid);
+        return $this->connection->FactoryReset($this->deviceid);
+    }
+
+    public function SetParameter($param)
+    {
+        $parameters[0]['parameter']=$param['param'];
+        $parameters[0]['value']=$param['value'];
+        $parameters[0]['type']='xsd:string';
+
+        return $this->connection->SetParameter(array('deviceid' => $this->deviceid),$parameters);
     }
 
     public function ExecuteTask($task)
     {
-        if($task['name']=="addTag"){
+
+        if(array_key_exists('name', $task) && $task['name']=="addTag"){
             $result = $this->AddTag($task['param']);
         }
-        elseif($task['name']=="getParameterValues")
+        elseif(array_key_exists('name', $task) && $task['name']=="getParameterValues")
         {
             $result = $this->GetParameter($task['param']);
         }
         else{
-				$param_array[0][]=$task['param'];
-				$param_array[0][]=$task['value'];
-				$param_array[0][]='xsd:string';
-
-				$array=array('name' => 'setParameterValues',
-							'parameterValues' =>$param_array
-						);
-
-		        $uri='devices/'.$this->deviceid.'/tasks?connection_request';
-
-				$result = $this->connection->POST($uri,json_encode($array));
-
-				$param_array=array();
+            $result=$this->SetParameter($task);
         }
         return $result;
     }
@@ -103,6 +107,24 @@ class LCPE extends LCsvGenieacs {
 		}
 
         return;
+    }
+
+    public function GetDeviceSummary()
+    {
+        $cpe =$this->GetDeviceById();
+
+        $result=array('id' => $cpe[0]['_id'],
+                    'manufacturer' => $cpe[0]['_deviceId']['_Manufacturer'],
+                    'productclass' => $cpe[0]['_deviceId']['_ProductClass'],
+                    'serialnumber' => $cpe[0]['_deviceId']['_SerialNumber'],
+                    'softwareversion' => $cpe[0]['InternetGatewayDevice']['DeviceInfo']['SoftwareVersion']['_value'],
+                    'lastboot' => $cpe[0]['_lastBoot'],
+                    'lastinform' => $cpe[0]['_lastInform'],
+                    'registered' => $cpe[0]['_registered'],
+                    'reboottime' => $cpe[0]['Reboot']['_value'],
+                    'cpe' => $cpe);
+
+        return $result;
     }
 }
 ?>

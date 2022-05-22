@@ -1,0 +1,52 @@
+{include file="header.html" title=LightCSV}
+<script>
+function setdevid(v)
+{
+	if(v.value!=0)
+		document.getElementById('devid').value = v.value;
+}
+</script>
+
+<form action="?m=fileadd" method="post" enctype="multipart/form-data">
+  Select file:
+  <input type="file" name="confFile" id="fileToUpload">
+  <input type="submit" value="Upload file" name="submit">
+</form>
+
+<h3>Create new configuration file</h3>
+{if $error}
+<h4 style="color:red">{$error}</h4>
+{/if}
+<form action="?m=fileadd&amp;action=create" method="post">
+<TABLE>
+    <TR>
+        <TD>
+            Device id:
+        </TD>
+        <TD>
+            <input type="text" name="devid" id="devid" placeholder="XXXXX-YYY-XXXXXXXXXXXX" size="32" title="">
+		{if $apinamelist}
+		Unknown CPE:<SELECT size="1" name="idlist" onchange="setdevid(this)">
+            	    <OPTION VALUE="0">Select</OPTION>
+					{foreach from=$namelist key=key item=item}{
+           			    <OPTION value="{$item}">{$item}</OPTION>
+					{/foreach}
+				</SELECT>
+		{/if}
+        </TD>
+    </TR>
+    <TR>
+        <TD>
+            Configuration:
+        </TD>
+        <TD>
+            <textarea name="configuration" placeholder="setssid;setParameterValues;parameterNames;InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID;testSSID" rows="10" cols="150">{$file}</textarea>
+        </TD>
+    </TR>
+    <TR>
+        <TD colspan="2">
+            <input type="submit" value="Save" name="submit">
+        </TD>
+    </TR>
+</TABLE>
+</form>

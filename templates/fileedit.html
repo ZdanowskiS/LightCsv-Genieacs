@@ -1,0 +1,46 @@
+{include file="header.html" title=LightCSV}
+<script>
+function setname(v)
+{
+	if(v.value!=0)
+		document.getElementById('filename').value = v.value;
+}
+</script>
+<form action="?m=fileedit&id={$id}" method="post" enctype="multipart/form-data">
+<TABLE>
+<TR>
+    <TD>
+        Name:
+    </TD>
+</TR>
+<TR>
+    <TD>
+        <input type="hidden" name='filenameold' value="{$filename}">
+        <input type="text" name='filename' id='filename' value="{$filename}" size="32">
+		{if $apinamelist}
+		Unknown CPE:<SELECT size="1" name="idlist" onchange="setname(this)">
+            	    <OPTION VALUE="0">Select</OPTION>
+					{foreach from=$namelist key=key item=item}{
+           			    <OPTION value="{$item}">{$item}</OPTION>
+					{/foreach}
+				</SELECT>
+		{/if}
+    </TD>
+<TR>
+<TR>
+    <TD>
+        Configuration:
+    </TD>
+</TR>
+<TR>
+    <TD>
+        <textarea name="file" rows="10" cols="150">{$file}</textarea>
+    </TD>
+<TR>
+<TR>
+    <TD>
+        <input type="submit" value="Save" name="submit">
+    </TD>
+</TR>
+</TABLE>
+</form>

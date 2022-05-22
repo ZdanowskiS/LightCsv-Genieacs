@@ -1,0 +1,46 @@
+{include file="header.html" title=LightCSV}
+<a href="?m=indexcpe" title="Create empty files for all CPE">Index All CPE</a>
+<FORM METHOD="POST" NAME="files" id="files" ACTION="?m=welcome">
+<TABLE>
+    <TR>
+        <TH>CPE id</TH><TH><a href="?m=reboot" title="Reboot all">Reboot</a></TH><TH>Run</TH><TH>Delete</TH>
+    </TR>
+{foreach from=$devices item=device}
+    <TR>
+        <TD><a href="?m=fileedit&id={$device.urlid}" title="Edit file">{$device.file}</a></TD>
+        <TD><a href="?m=reboot&id={$device.urlid}" title="Reboot CPE"> {if $device.reboottime}{$device.reboottime}{else}Reboot{/if}</a></TD>
+        <TD align="center"><a href="?m=cpeconfigure&id={$device.urlid}" title="Run configuration from file">-></a></TD>
+        <TD align="center"><a href="?m=filedel&file={$device.urlfile}" title="Delete file">X</a></TD>
+		 <TD align="center"><INPUT TYPE="checkbox" NAME="marks[{$device.file}]" VALUE="{$device.urlfile}" class="mark">
+    </TR>
+{/foreach}
+<TR>
+	<TD colspan="5" align="right">
+		<button type="button" onclick="delfile()">Delete files</button> 
+		<INPUT TYPE="checkbox" NAME="marks[{$device.file}]" VALUE="" onclick="mark()" title="Revert checked">
+	</TD>
+</TR>
+</TABLE>
+</FORM>
+
+<script>
+
+function mark()
+{
+	var inputs = document.querySelectorAll('.mark');
+
+	inputs.forEach(function (input) {
+    	if(input.checked)
+			input.checked=false;
+		else
+			input.checked=true;
+	});
+}
+
+function delfile()
+{
+	document.getElementById('files').action = "?m=welcome&action=del";
+	
+	document.getElementById('files').submit();
+}
+</script>

@@ -1,0 +1,151 @@
+{include file="header.html" title=LightCSV}
+<script>
+function GetDownloadSpeed(){
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("GET", "?m=cpeaction&action=GetDownloadSpeed&id={$cpeinfo.id}");
+    document.getElementById("downloadresult").innerHTML ='running...';
+    xhttp.onload = function() {
+            if(this.responseText=='Diagnostic Status:None')
+            {
+                document.getElementById("DownloadDiagnostics").disabled=true;
+            }
+        document.getElementById("downloadresult").innerHTML =
+        this.responseText;
+    }
+    xhttp.send();
+}
+
+function action(ob){
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("GET", "?m=cpeaction&action="+ob.value+"&id={$cpeinfo.id}");
+    document.getElementById("downloadresult").innerHTML ='running...';
+    xhttp.onload = function() {
+        if(this.responseText=='GetDownloadSpeed')
+        {
+            GetDownloadSpeed();
+        }
+        else
+        {
+            if(this.responseText=='Diagnostic Status:None')
+            {
+                document.getElementById("DownloadDiagnostics").disabled=true;
+            }
+            else
+            {
+                document.getElementById("DownloadDiagnostics").disabled=false;
+            }
+            document.getElementById("downloadresult").innerHTML =
+            this.responseText;
+
+            if(this.responseText=='reload')
+            {
+                location.reload(true);
+            }
+        }
+
+    }
+    xhttp.send();
+}
+
+function test(ob){
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("GET", "?m=cpeaction&action="+ob.value+"&id={$cpeinfo.id}");
+    document.getElementById("testresult").innerHTML ='running...';
+    xhttp.onload = function() {
+        document.getElementById("testresult").innerHTML =
+        this.responseText;
+    }
+    xhttp.send();
+}
+</script>
+
+<h3>Info:</h3>
+<TABLE>
+    <TR>
+        <TH>Manufacturer</TH>
+        <TD>{$cpeinfo.manufacturer}</TD>
+    </TR>
+    <TR>
+        <TH>Product class</TH>
+        <TD>{$cpeinfo.productclass}</TD>
+    </TR>
+    <TR>
+        <TH>Serial number</TH>
+        <TD>{$cpeinfo.serialnumber}</TD>
+    </TR>
+    <TR>
+        <TH>Software version</TH>
+        <TD>{$cpeinfo.softwareversion}</TD>
+    </TR>
+    <TR>
+        <TH>Registered</TH>
+        <TD>{$cpeinfo.registered}</TD>
+    </TR>
+    <TR>
+        <TH>Last boot</TH>
+        <TD>{$cpeinfo.lastboot}</TD>
+    </TR>
+    <TR>
+        <TH>Last inform</TH>
+        <TD>{$cpeinfo.lastinform}</TD>
+    </TR>
+</TABLE>
+<h3>Action:</h3>
+<button type="button" id="SendConfig" value="SendConfig" onclick="action(this)">Send Config</button>
+<button type="button" id="Reboot" value="Reboot" onclick="action(this)">Reboot</button>
+<button type="button" id="FactoryReset" value="FactoryReset" onclick="action(this)">Factory Reset</button><BR>
+{if $cache_downloadurl ne ''}
+<button type="button" id="DownloadDiagnostics" value="DownloadDiagnostics" onclick="action(this)">Download diagnostic</button>
+{else}
+Configure 'downloadurl'
+{/if}
+<button type="button" value="GetDownloadSpeed" onclick="action(this)">Get download reasult</button>
+<p id='downloadresult'></p>
+<h4>Test functions:</h4>
+<TABLE class='hide' width="100%">
+    <TR>
+        <TD class='hide'>
+            <button type="button" value="testWANPPP" onclick="test(this)">Test PPPoE</button>
+            <button type="button" value="testWLAN" onclick="test(this)">Test WLAN</button>
+            <button type="button" value="testWANIP" onclick="test(this)">Test WANIP</button>
+        </TD>
+
+    </TR>
+    <TR>
+        <TD class='hide'>
+            <p id="testresult"></p>
+        </TD>
+    </TR>
+</TABLE>
+<h3>Faults:</h3>
+<TABLE>
+<TR>
+    <TH>Timestamp</TH>
+    <TH>Channel</TH>
+    <TH>Retries</TH>
+    <TH>Code</TH>
+    <TH>Message</TH>
+</TR>
+{foreach from=$faults key=name item=f}
+<TR>
+    <TD>{$f.timestamp}</TD>
+    <TD>{$f.channel}</TD>
+    <TD>{$f.retries}</TD>
+    <TD>{$f.code}</TD>
+    <TD>{$f.message}</TD>
+</TR>
+{/foreach}
+</TABLE>
+
+<h3>Configuration:</h3>
+<a href="?m=fileedit&id={$cpeinfo.id}" title="Edit file">Edit configuration</a>
+<TABLE>
+{foreach from=$config key=name item=cpe}
+<TR>
+    <TH>{$name}:</TH>
+    <TD>{$cpe}</TD>
+</TR>
+{/foreach}
+</TABLE>

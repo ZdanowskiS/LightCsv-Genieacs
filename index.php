@@ -26,11 +26,15 @@ define('CONFIG_FILE', $CONFIG_FILE);
 $CONFIG = (array) parse_ini_file(CONFIG_FILE, true);
 require_once "./lib/Hook.class.php";
 
+require_once "./lib/LCsvGenieacsApiInterface.php";
 require_once "./lib/LCsvGenieacsInterface.php";
+require_once "./lib/LCPEInterface.php";
 
 require_once "./lib/LCsvGenieacs.class.php";
+require_once "./lib/LCsvCache.class.php";
 require_once "./lib/LCsvGenieacsApi.class.php";
 require_once "./lib/LCPE.class.php";
+require_once "./lib/BaseCPE.class.php";
 
 require_once "./lib/loadServers.php";
 
@@ -48,50 +52,30 @@ if($hooks->existsServer($route['type']))
 }
 else
 {
-    if($_FILES)
+    $LAPI=new LCsvGenieacsApi($CONFIG['general']['ip']);
+    if(file_exists('smarty/libs/Smarty.class.php'))
     {
-        $target=$CONFIG['general']['cpedir'].$_FILES['confFile']['name'];
-        if(!move_uploaded_file($_FILES['confFile']['tmp_name'], $target))
-        {
-            echo "Could't upload file. Check privileges.";
-            die();
-        }
-    }
-    elseif(array_key_exists('cpeid',$_GET))
-    {
-        $id=str_replace('.csv','',$_GET['cpeid']);
-        $LCPE = new LCPE($id);
-        $LCPE->ExecuteAction();
-    }
-    elseif(array_key_exists('remove',$_GET))
-    {
-        if(!unlink($CONFIG['general']['cpedir'].$_GET['remove']))
-        {
-            echo "Could't remove file. Check privileges.";
-            die();
-        }
-    }
+        require 'smarty/libs/Smarty.class.php';
+        $smarty = new Smarty;
 
-    if($CONFIG['general']['cpedir'])
-    {
-        echo "<h2>Genieacs CSV data source</h2><BR>";
-        echo "Upload file:";
-        echo '<form action="" method="post" enctype="multipart/form-data">
-  Select image to upload:
-  <input type="file" name="confFile" id="fileToUpload">
-  <input type="submit" value="Upload file" name="submit">
-</form>';
-        $files = scandir($CONFIG['general']['cpedir']);
+        if(!$_GET['m'])
+            $module='welcome';
+        else
+            $module=$_GET['m'];
 
-        if($files)foreach($files as $file)
-        {
-            if($file!='.' && $file!='..')
-                print '<a href="?cpeid='.$file.'">'.$file.'</a>'.' <a href="?remove='.$file.'">X</a>'."<BR>";
+        $smarty->assign('cache_enable', $CONFIG['cache']['enable']);
+        $smarty->assign('title', 'Light CSV');
+
+        $file='modules/'. $module . '.php';
+        if (file_exists($file)) {
+            include $file;
+        }
+        else {
+            echo "No souch page.";
+            exit;
         }
     }
     else
-    {
-        echo "Set configuration!";
-    }
+        include 'actions.inc.php';
 }
 ?>

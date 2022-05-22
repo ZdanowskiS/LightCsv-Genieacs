@@ -1,11 +1,15 @@
 <?php
 
-class LCsvGenieacsApi {
+class LCsvGenieacsApi implements LCsvGenieacsApiInterface {
 
 	private $url;
+	private $cache;
 
-	public function __construct(){
+	public function __construct($url=NULL, &$cache=NULL){
 
+		$this->cache=$cache;
+		if($url)
+			$this->setURL($url);
 	}
 
     public function setURL($url)
@@ -13,10 +17,23 @@ class LCsvGenieacsApi {
         $this->url=$url;
     }
 
+	public function isJSON($data)
+	{
+		return is_string($data) && is_array(json_decode($data, 1)) ? true : false;
+	}
+
 	public function GET($action)
 	{
 		if(!$this->url)
 			return;
+
+		if(is_object($this->cache))
+		{
+			$result=$this->cache->search($action);
+		
+			if($result)
+				return $result;
+		}
 
 		$curl = curl_init();
 
@@ -31,12 +48,25 @@ class LCsvGenieacsApi {
 
 		$result = curl_exec($curl);
 
+		if(is_object($this->cache))
+		{
+			$cache->write($action,$result);
+		}
+
 		return json_decode($result,1);
 	}
 
+    public function GetAllDevices()
+    {
+        $action ='devices';
+		$result = $this->GET($action);
+
+		return $result;     
+    }
+
 	public function GetDeviceById($id)
 	{
-		$data=array('_id'=>$id);
+		$data=array('_id'=>urlencode($id));
 		$action = 'devices/?query='.json_encode($data, JSON_HEX_QUOT);
 		$result = $this->GET($action);
 
@@ -47,6 +77,20 @@ class LCsvGenieacsApi {
 	{
 		$data=array('_deviceId._SerialNumber'=>$serial);
 		$action = 'devices/?query='.json_encode($data, JSON_HEX_QUOT);
+
+		return $this->GET($action);
+	}
+
+	public function GetFaults($id)
+	{
+		$data=array('_id'=>urlencode($id).':default');
+		$action = 'faults/?query='.json_encode($data, JSON_HEX_QUOT);
+		return $this->GET($action);
+	}
+
+	public function GetFiles()
+	{
+		$action = 'files/';
 
 		return $this->GET($action);
 	}
@@ -73,6 +117,22 @@ class LCsvGenieacsApi {
 		$result = curl_exec($curl);
 
 		return json_decode($result,1);
+	}
+
+	public function DelTag($id, $tag)
+	{
+		$action='devices/'.urlencode($id).'/tags/'.$tag;
+		$result = $this->DELETE($action);
+		
+		return;
+	}
+
+	public function DelDevice($id)
+	{
+		$action='devices/'.urlencode($id);
+		$result = $this->DELETE($action);
+		
+		return;
 	}
 
 	public function PUT($action,$data)
@@ -119,12 +179,16 @@ class LCsvGenieacsApi {
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 
 		$result = curl_exec($curl);
-		return json_decode($result,1);
+
+		if($this->isJSON($result))
+			return json_decode($result,1);
+		else
+			return $result;
 	}
 
 	public function RefreshObject($id,$param)
 	{
-		$action='devices/'.$id.'/tasks?connection_request';
+		$action='devices/'.urlencode($id).'/tasks?connection_request';
 
 		$array=array('name' => 'refreshObject',
 						'objectName' =>$param
@@ -137,21 +201,19 @@ class LCsvGenieacsApi {
 		return $result;
 	}
 
-	public function AddObject($data,$parameters)
+	public function AddObject($data,$param)
 	{
-		if($parameters)foreach($parameters as $key => $parameter)
-		{
-			$param_array[$key][]=$parameter['parameter'];
-			$param_array[$key][]=$parameter['value'];
-			$param_array[$key][]=$parameter['type'];
-		}
 
-		$action='devices/'.$data['deviceid'].'/tasks?connection_request';
+		$action='devices/'.urlencode($data['deviceid']).'/tasks?connection_request';
 
 		$array=array('name' => 'addObject',
 						'objectName' =>
-								$param_array
+								$param
 					);
+        $data=json_encode($array);
+		$result = $this->POST($action,$data);
+
+		return $result;
 	}
 
 	public function SetParameter($data,$parameters)
@@ -163,7 +225,7 @@ class LCsvGenieacsApi {
 			$param_array[$key][]=$parameter['type'];
 		}
 
-		$action='devices/'.$data['deviceid'].'/tasks?connection_request';
+		$action='devices/'.urlencode($data['deviceid']).'/tasks?connection_request';
 
 		$array=array('name' => 'setParameterValues',
 						'parameterValues' =>
@@ -178,7 +240,7 @@ class LCsvGenieacsApi {
 
 	public function GetParameter($data,$parameter)
 	{
-		$action='devices/'.$data['deviceid'].'/tasks?connection_request';
+		$action='devices/'.urlencode($data['deviceid']).'/tasks?connection_request';
 
 		$array=array('name' => 'getParameterValues',
 						'parameterNames' =>
@@ -188,31 +250,64 @@ class LCsvGenieacsApi {
 		$data=json_encode($array);
 
 		$result = $this->POST($action,$data);
+
+		return $result;
 	}
 
 	public function AddTag($id, $tag)
 	{
-		$action='devices/'.$id.'/tags/'.$tag;
+		$action='devices/'.urlencode($id).'/tags/'.$tag;
 
 		$result = $this->POST($action,$data);
 		
 		return;
 	}
 
-	public function DelTag($id, $tag)
+    public function Reboot($id)
+    {
+        $param_array[0][]='reboot';
+        $param_array[0][]='xsd:string';
+
+        $array=array('name' => 'reboot'
+						); 
+
+        $uri='devices/'.urlencode($id).'/tasks?timeout=3000&connection_request';
+
+        $result = $this->POST($uri,json_encode($array));  
+
+        return;
+    }
+
+    public function FactoryReset($id)
+    {
+        $param_array[0][]='reboot';
+        $param_array[0][]='xsd:string';
+
+        $array=array('name' => 'factoryReset'
+						); 
+
+        $uri='devices/'.urlencode($id).'/tasks?timeout=3000&connection_request';
+
+        $result = $this->POST($uri,json_encode($array));  
+
+        return;
+    }
+
+	public function Download($id,$filename)
 	{
-		$action='devices/'.$id.'/tags/'.$tag;
-		$result = $this->DELETE($action);
-		
-		return;
+		$action='devices/'.urlencode($id).'/tasks?connection_request';
+
+		$array=array('name' => 'download',
+						'file' =>$filename
+					);
+
+		$data=json_encode($array);
+
+		$result = $this->POST($action,$data);
+
+		return $result;
 	}
 
-	public function GetFiles()
-	{
-		$action = 'files/';
-
-		return $this->GET($action);
-	}
 
 	public function PutFile($file, $data)
 	{
@@ -244,22 +339,6 @@ class LCsvGenieacsApi {
 		$result = curl_exec($curl);
 
 		return json_decode($result,1);
-	}
-
-	public function DownloadFile($id,$filename)
-	{
-
-		$action='devices/'.$id.'/tasks?connection_request';
-
-		$array=array('name' => 'download',
-						'file' =>$filename
-					);
-
-		$data=json_encode($array);
-
-		$result = $this->POST($action,$data);
-
-		return $result;
 	}
 }
 

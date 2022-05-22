@@ -1,0 +1,41 @@
+<HTML>
+<HEAD>
+<TITLE>{$title} - {$Name}</TITLE>
+</HEAD>
+<style>
+table, th, td {
+  border: 1px solid;
+    border-collapse: collapse;
+}
+table.hide, th.hide, td.hide {
+  border: 0px solid;
+    border-collapse: collapse;
+    vertical-align: top;
+}
+div.menu {
+  font-size: 12;
+  position: absolute;
+  top: 80px;
+  left: 0;
+  width: 100px;
+}
+div.content {
+  position: absolute;
+
+  left: 100px;
+}
+</style>
+<BODY bgcolor="#DDDDDD">
+
+<div class="menu">
+{if $cache_enable}
+<div><a href="?m=cachedel">Clean Cache</a></div>
+{/if}
+<div><a href="?m=welcome">File List</a></div>
+<div><a href="?m=fileadd">New File</a></div>
+<div><a href="?m=cpelist">CPE List</a></div>
+<div><a href="?m=templateadd">New Template</a></div>
+<div><a href="?m=templatelist">Template List</a></div>
+</div>
+<div class="content">
+<h2>{$title} - {$Name}</h2>

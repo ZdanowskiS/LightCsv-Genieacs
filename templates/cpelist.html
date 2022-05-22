@@ -1,0 +1,79 @@
+{include file="header.html" title=LightCSV}
+<TABLE>
+    <TR>
+        <TH>CPE id</TH>
+        <TH>
+<A href="?m=cpelist&amp;o=manufacturer{if $listdata.direction == "asc" && $listdata.order == "manufacturer"},desc{/if}"><B>Manufacturer</B></A> {if $listdata.order == "manufacturer"}{if $listdata.direction == "desc"}&darr;{else}&uarr;{/if}{/if}
+        </TH>
+        <TH>
+<A href="?m=cpelist&amp;o=productclass{if $listdata.direction == "asc" && $listdata.order == "productclass"},desc{/if}"><B>Class</B></A> {if $listdata.order == "productclass"}{if $listdata.direction == "desc"}&darr;{else}&uarr;{/if}{/if}
+        </TH>
+        <TH>
+<A href="?m=cpelist&amp;o=oui{if $listdata.direction == "asc" && $listdata.order == "oui"},desc{/if}"><B>OUI</B></A> {if $listdata.order == "oui"}{if $listdata.direction == "desc"}&darr;{else}&uarr;{/if}{/if}
+        </TH>
+        <TH>
+<A href="?m=cpelist&amp;o=serialnumber{if $listdata.direction == "asc" && $listdata.order == "serialnumber"},desc{/if}"><B>Serial</B></A> {if $listdata.order == "serialnumber"}{if $listdata.direction == "desc"}&darr;{else}&uarr;{/if}{/if}
+        </TH>
+        <TH>
+<A href="?m=cpelist&amp;o=softwareversion{if $listdata.direction == "asc" && $listdata.order == "softwareversion"},desc{/if}"><B>Version</B></A> {if $listdata.order == "softwareversion"}{if $listdata.direction == "desc"}&darr;{else}&uarr;{/if}{/if}
+        </TH>
+        <TH>Reboot</TH>
+        <TH>Update</TH>
+        <TH>Action</TH>
+    </TR>
+	<TR>
+		<FORM action="?m=cpelist" method="post">
+		<TD colspan="9">
+		Filter:
+					<label for="oui"><SPAN class="nobr">OUI:</SPAN>
+					<SELECT SIZE="1" NAME="soui" >
+						<OPTION value="">- all oui -</OPTION>
+						{foreach from=$ouilist item=oui}
+						<OPTION value="{$oui}" {if $filter.soui == $oui} SELECTED {/if}>{$oui|truncate:30:"...":true}</OPTION>
+						{/foreach}
+					</SELECT>
+					</label>
+					<label for="sclass"><SPAN class="nobr">Product Class:</SPAN>
+					<SELECT SIZE="1" NAME="sclass" >
+						<OPTION value="">- all -</OPTION>
+						{foreach from=$productclasslist item=class}
+						<OPTION value="{$class}" {if $filter.sclass == $class} SELECTED {/if}>{$class|truncate:30:"...":true}</OPTION>
+						{/foreach}
+					</SELECT>
+					</label>
+					<label for="action"><SPAN class="nobr">Action:</SPAN>
+					<SELECT SIZE="1" NAME="action">
+						<OPTION value="">- none -</OPTION>
+						<OPTION value="reboot" {if $filter.action == "reboot"} SELECTED {/if}>reboot</OPTION>
+					</SELECT>
+					</label>
+		<input type="submit" value="filter/execute" name="execute">
+		</TD>
+
+		</FORM>
+	</TR>
+{foreach from=$devices item=device}
+    <TR>
+        <TD><a href='?m=cpeinfo&id={$device.urlid}'>{$device.id}</a></TD>
+        <TD>{$device.manufacturer}</TD>
+        <TD>{$device.productclass}</TD>
+        <TD>{$device.oui}</TD>
+        <TD>{$device.serialnumber}</TD>
+        <TD>{$device.softwareversion}</TD>
+        <TD align="center"><a href="?m=reboot&id={$device.urlid}">{if $device.reboottime}{$device.reboottime}{else}Reboot{/if}</a></TD>
+        <TD >
+            <form action="?m=cpeupdate&id={$device.id}" method="post" enctype="multipart/form-data">
+			    <SELECT size="1" name="update"  style="width: 300px">
+            	    <OPTION VALUE="0">Select</OPTION>
+					{foreach from=$device.update key=key item=item}{
+           			    <OPTION value="{$key}">{$item.filename} {$item.version}</OPTION>
+					{/foreach}
+				</SELECT><BR>
+                <input type="submit" value="Update" name="submit">
+            </form>
+        </TD>
+        <TD>{if $device.file}<a href="?m=cpeconfigure&id={$device.urlid}" title="Run configuration from file">-></a>{/if}
+			<a href="?m=cpedel&id={$device.urlid}" title="Delete CPE from ACS">X</a></TD>
+    </TR>
+{/foreach}
+</TABLE>

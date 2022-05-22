@@ -1,0 +1,22 @@
+{include file="header.html" title=LightCSV}
+
+<form action="?m=templateedit&id={$id}" method="post" enctype="multipart/form-data">
+<TABLE>
+<TR>
+    <TD>
+        Edit Template
+    </TD>
+</TR>
+<TR>
+    <TD>
+        <input type="hidden" name='filename' value="{$filename}">
+        <textarea name="file" rows="10" cols="150">{$file}</textarea>
+    </TD>
+<TR>
+<TR>
+    <TD>
+        <input type="submit" value="Save" name="submit">
+    </TD>
+</TR>
+</TABLE>
+</form>
