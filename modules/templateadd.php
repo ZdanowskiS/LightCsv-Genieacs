@@ -35,9 +35,6 @@ elseif($action=='create')
 
 if($CONFIG['general']['apiclasslist'])
 {
-	#$LAPI = new LCsvGenieacsApi();
-	#$LAPI->setURL($CONFIG['general']['ip']);
-
 	$ouifiles=scandir($CONFIG['general']['templatedir']);
 
 	$cpelist = $LAPI->GetAllDevices();
