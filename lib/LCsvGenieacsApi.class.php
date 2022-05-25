@@ -30,7 +30,7 @@ class LCsvGenieacsApi implements LCsvGenieacsApiInterface {
 		if(is_object($this->cache))
 		{
 			$result=$this->cache->search($action);
-		
+
 			if($result)
 				return $result;
 		}
@@ -50,7 +50,7 @@ class LCsvGenieacsApi implements LCsvGenieacsApiInterface {
 
 		if(is_object($this->cache))
 		{
-			$cache->write($action,$result);
+			$this->cache->write($action,$result);
 		}
 
 		return json_decode($result,1);
@@ -216,7 +216,7 @@ class LCsvGenieacsApi implements LCsvGenieacsApiInterface {
 		return $result;
 	}
 
-	public function SetParameter($data,$parameters)
+	public function SetParameter($id,$parameters)
 	{
 		if($parameters)foreach($parameters as $key => $parameter)
 		{
@@ -225,7 +225,7 @@ class LCsvGenieacsApi implements LCsvGenieacsApiInterface {
 			$param_array[$key][]=$parameter['type'];
 		}
 
-		$action='devices/'.urlencode($data['deviceid']).'/tasks?connection_request';
+		$action='devices/'.urlencode($id).'/tasks?connection_request';
 
 		$array=array('name' => 'setParameterValues',
 						'parameterValues' =>
@@ -238,9 +238,9 @@ class LCsvGenieacsApi implements LCsvGenieacsApiInterface {
 		return $result;
 	}
 
-	public function GetParameter($data,$parameter)
+	public function GetParameter($id,$parameter)
 	{
-		$action='devices/'.urlencode($data['deviceid']).'/tasks?connection_request';
+		$action='devices/'.urlencode($id).'/tasks?connection_request';
 
 		$array=array('name' => 'getParameterValues',
 						'parameterNames' =>

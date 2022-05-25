@@ -14,8 +14,7 @@ class LCsvCache {
 
 	private function parseAction($action)
 	{
-		$searach=array('?',"/",'query','-');
-		return str_replace($searach,"",$action);
+        return md5($action);
 	}
 
 	public function write($action, $data)

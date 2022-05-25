@@ -52,7 +52,11 @@ if($hooks->existsServer($route['type']))
 }
 else
 {
-    $LAPI=new LCsvGenieacsApi($CONFIG['general']['ip']);
+
+    if($CONFIG['cache']['enable'])
+        $cache=new LCsvCache();
+
+    $LAPI=new LCsvGenieacsApi($CONFIG['general']['ip'],$cache);
     if(file_exists('smarty/libs/Smarty.class.php'))
     {
         require 'smarty/libs/Smarty.class.php';

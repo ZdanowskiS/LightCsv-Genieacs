@@ -44,7 +44,7 @@ class LCPE extends LCsvGenieacs implements LCPEInterface{
 
     public function GetParameter($param)
     {
-        $this->connection->GetParameter(array('deviceid' => $this->deviceid), $param);
+        $this->connection->GetParameter($this->deviceid, $param);
     }
 
     public function GetDeviceById()
@@ -78,7 +78,7 @@ class LCPE extends LCsvGenieacs implements LCPEInterface{
         $parameters[0]['value']=$param['value'];
         $parameters[0]['type']='xsd:string';
 
-        return $this->connection->SetParameter(array('deviceid' => $this->deviceid),$parameters);
+        return $this->connection->SetParameter($this->deviceid,$parameters);
     }
 
     public function ExecuteTask($task)
