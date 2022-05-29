@@ -1,8 +1,14 @@
 # LightCsv-Genieacs
 Light CSV to Genieacs
 
-This solution is ment as an example, how to pass data to Genieacs. It
-can be used as testing environment or starting point for integration of other data sources for GenieACS.
+LightCSV can be used to store CPE configurations and to manage CPE. It also offers some of GenieACS user interface functions and adds new ones:
+1. Testing few selected TR-098 data model functions
+2. Testing download speed
+3. Shows matching presets to selected CPE
+
+Functionality is concentrated on managing CPE, not necessary on configuring whole GeniaACS.
+
+LightCSV can also be used as example - how to integrate GenieACS with other systems. Therefore code is divided in a way that should simplify using it in other projects (in compliance with AGPL-3.0 licence).
 # Usage
 Add ext and provisioning to GenieACS.
 
