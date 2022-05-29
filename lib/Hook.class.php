@@ -3,6 +3,7 @@
 class Hooks {
 
 	private $server = array();
+    private $cpe =array();
 
     public function __construct(){
 
@@ -17,6 +18,14 @@ class Hooks {
 
                 $this->reginsterServer($data);
             }
+
+            if(method_exists($class,"addCPE"))
+            {
+                $obj = new $class;
+                $data=$obj->addCPE();
+
+                $this->reginsterCPE($data);
+            } 
         }
 	}
 
@@ -39,6 +48,20 @@ class Hooks {
     public function existsServer($name)
     {
         if(array_key_exists($name,$this->server))
+            return true;
+        else
+            return false;
+    }
+
+    ///
+    public function reginsterCPE($name)
+    {
+        $this->cpe[$name]= TRUE;
+    }  
+
+    public function existsCPE($name)
+    {
+        if(array_key_exists($name,$this->cpe))
             return true;
         else
             return false;

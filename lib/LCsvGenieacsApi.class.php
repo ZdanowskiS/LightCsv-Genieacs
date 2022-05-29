@@ -95,6 +95,14 @@ class LCsvGenieacsApi implements LCsvGenieacsApiInterface {
 		return $this->GET($action);
 	}
 
+    public function GetPresets()
+    {
+        $action ='presets';
+		$result = $this->GET($action);
+
+		return $result;     
+    }
+
 	public function DELETE($action)
 	{
 		if(!$this->url)
@@ -130,6 +138,14 @@ class LCsvGenieacsApi implements LCsvGenieacsApiInterface {
 	public function DelDevice($id)
 	{
 		$action='devices/'.urlencode($id);
+		$result = $this->DELETE($action);
+		
+		return;
+	}
+
+	public function DelPreset($name)
+	{
+		$action='presets/'.urlencode($name);
 		$result = $this->DELETE($action);
 		
 		return;

@@ -37,6 +37,7 @@ require_once "./lib/LCPE.class.php";
 require_once "./lib/BaseCPE.class.php";
 
 require_once "./lib/loadServers.php";
+require_once "./lib/loadCPE.php";
 
 $hooks=new Hooks();
 
@@ -52,7 +53,6 @@ if($hooks->existsServer($route['type']))
 }
 else
 {
-
     if($CONFIG['cache']['enable'])
         $cache=new LCsvCache();
 
@@ -62,7 +62,7 @@ else
         require 'smarty/libs/Smarty.class.php';
         $smarty = new Smarty;
 
-        if(!$_GET['m'])
+        if(!array_key_exists('m', $_GET))
             $module='welcome';
         else
             $module=$_GET['m'];

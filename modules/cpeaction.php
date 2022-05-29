@@ -4,6 +4,15 @@ $action=$_GET['action'];
 $id=$_GET['id'];
 
 $CPE = new BaseCPE($LAPI,$id);
+$device=$CPE->GetDeviceById();
+$classname=$device[0]['_deviceId']['_ProductClass'];
+
+$classexists=$hooks->existsCPE($classname);
+if($classexists)
+{
+    $classname=$classname.'CPE';
+    $CPE = new $classname($LAPI,$id);
+}
 
 switch($action){
 	case 'DownloadDiagnostics':
@@ -30,11 +39,7 @@ switch($action){
         }
         echo $result;
 	break;
-	case 'testWANPPP':
-    case 'testWLAN':
-	case 'testWANIP':
-        $action=str_replace('test','',$action);
-
+    case array_key_exists($action, $CPE->data_model): 
 		$test=$CPE->testModel($action);
 
         $result='<TABLE>';

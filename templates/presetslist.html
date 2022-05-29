@@ -1,0 +1,43 @@
+{include file="header.html" title=LightCSV}
+
+<TABLE width="100%">
+    <TR>
+        <TH>Name</TH>
+        <TH>Events</TH>
+        <TH>Weight</TH>
+        <TH>Provision</TH>
+        <TH>Arguments</TH>
+        <TH>Action</TH>
+    </TR>
+{foreach from=$presets item=preset}
+    <TR>
+        <TH rowspan="2">{$preset._id}</TH>
+        <TD>
+            {foreach from=$preset.events key=name item=event}
+                {$name} 
+            {/foreach}
+        </TD>
+        <TD>
+            {$preset.weight}
+        </TD>
+        <TD>
+            {$preset.configurations.0.name|@print_r}
+        </TD>
+        <TD>
+            {assign var="args" value=$preset.configurations.0.args}
+
+            {foreach from=$args item=arg}
+                {$arg.1.1} {$arg.0} {$arg.2}
+            {/foreach}
+        </TD>
+        <TD rowspan="2">
+            <a href="?m=presetdel&id={$preset._id}">X</a>
+        </TD>
+    </TR>
+    <TR>
+        <td colspan="4" title="precondition">
+            {$preset.precondition}
+        </td>
+    </TR>
+{/foreach}
+</TABLE>

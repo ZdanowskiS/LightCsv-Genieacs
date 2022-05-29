@@ -5,7 +5,7 @@ class BaseCPE extends LCPE{
 	public $connection;
 	public $deviceid;
 
-	private $data_model=array('WANPPP' => array(
+	public $data_model=array('WANPPP' => array(
 										'Enable' => 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Enable',
 										'Username' => 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Username',
 										'Password' => 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Password'),
@@ -21,8 +21,15 @@ class BaseCPE extends LCPE{
 										'DNSServers' => 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers',
 										'DefaultGateway' => 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DefaultGateway',
 										'MACAddress' => 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.MACAddress',
-										'SubnetMask' => 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.SubnetMask'
-										)
+										'SubnetMask' => 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.SubnetMask'),
+                                'ConfigPassword' => array(
+                                        'ConfigPassword' => 'InternetGatewayDevice.LANConfigSecurity.ConfigPassword',
+                                        ),
+                                'Layer2Bridging' => array(
+                                        'VLANEnable' => 'InternetGatewayDevice.Layer2Bridging.Bridge.1.VLAN.1.VLANEnable',
+                                        'VLANName' => 'InternetGatewayDevice.Layer2Bridging.Bridge.1.VLAN.1.VLANName',
+                                        'VLANID' => 'InternetGatewayDevice.Layer2Bridging.Bridge.1.VLAN.1.VLANID',
+                                        )
 							);
 	public function __construct(&$connection, $deviceid){
 
@@ -34,6 +41,11 @@ class BaseCPE extends LCPE{
 	{
 		return is_string($data) && is_array(json_decode($data, 1)) ? true : false;
 	}
+
+    public function GetDataModel()
+    {
+        return $this->data_model;
+    }
 
 	public function DownloadDiagnostics($downloadurl)
 	{
@@ -93,6 +105,7 @@ class BaseCPE extends LCPE{
 			{
 				$tree=$device[0];
 				$branch=explode(".",$param);
+
         		foreach($branch as $name)
         		{
             		$tree = $this->getBranch($name, $tree);

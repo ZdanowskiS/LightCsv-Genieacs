@@ -109,9 +109,19 @@ class LCPE extends LCsvGenieacs implements LCPEInterface{
         return;
     }
 
-    public function GetDeviceSummary()
+    public function ConvertTime($time)
     {
-        $cpe =$this->GetDeviceById();
+        $dt = new DateTime();
+        $tz = $dt->getTimezone();
+        $date = new DateTime($time);
+        $date->setTimezone(new DateTimeZone($tz->getName()));
+        return $date->format('Y-m-d H:i:s');
+    }
+
+    public function GetDeviceSummary($cpe=null)
+    {
+        if(is_null($cpe))
+            $cpe =$this->GetDeviceById();
 
         $result=array('id' => $cpe[0]['_id'],
                     'manufacturer' => $cpe[0]['_deviceId']['_Manufacturer'],
@@ -119,9 +129,14 @@ class LCPE extends LCsvGenieacs implements LCPEInterface{
                     'serialnumber' => $cpe[0]['_deviceId']['_SerialNumber'],
                     'softwareversion' => $cpe[0]['InternetGatewayDevice']['DeviceInfo']['SoftwareVersion']['_value'],
                     'lastboot' => $cpe[0]['_lastBoot'],
+                    'locallastboot' => $this->ConvertTime($cpe[0]['_lastBoot']),
                     'lastinform' => $cpe[0]['_lastInform'],
+                    'locallastinform' => $this->ConvertTime($cpe[0]['_lastInform']),
                     'registered' => $cpe[0]['_registered'],
+                    'localregistered' => $this->ConvertTime($cpe[0]['_registered']),
                     'reboottime' => $cpe[0]['Reboot']['_value'],
+                    'localreboottime' => $this->ConvertTime($cpe[0]['Reboot']['_value']),
+                    'tags' => $cpe[0]['_tags'],
                     'cpe' => $cpe);
 
         return $result;
