@@ -9,6 +9,10 @@ LightCSV can be used to store CPE configurations and to manage CPE. It also offe
 Functionality is concentrated on managing CPE, not necessary on configuring whole GeniaACS.
 
 LightCSV can also be used as example - how to integrate GenieACS with other systems. Therefore code is divided in a way that should simplify using it in other projects (in compliance with AGPL-3.0 licence).
+
+# Support
+
+For support options contact by mail: sylwesterzdanowski[at]gmail.com
 # Usage
 Add ext and provisioning to GenieACS.
 
