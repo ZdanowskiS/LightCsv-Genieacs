@@ -49,7 +49,15 @@ class LCPE extends LCsvGenieacs implements LCPEInterface{
 
     public function GetDeviceById()
     {
-        return $this->connection->GetDeviceById($this->deviceid);
+       $result = $this->connection->GetDeviceById($this->deviceid);
+
+       return $result;
+    }
+
+    public function test()
+    {
+        return$this->connection->GetDeviceById($this->deviceid);
+        return 'test';
     }
 
     public function GetFaults()
@@ -83,7 +91,6 @@ class LCPE extends LCsvGenieacs implements LCPEInterface{
 
     public function ExecuteTask($task)
     {
-
         if(array_key_exists('name', $task) && $task['name']=="addTag"){
             $result = $this->AddTag($task['param']);
         }

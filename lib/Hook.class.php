@@ -4,6 +4,7 @@ class Hooks {
 
 	private $server = array();
     private $cpe =array();
+    private $cpefunctions = array();
 
     public function __construct(){
 
@@ -19,12 +20,18 @@ class Hooks {
                 $this->reginsterServer($data);
             }
 
-            if(method_exists($class,"addCPE"))
+            if(method_exists($class,'addCPE'))
             {
                 $obj = new $class;
                 $data=$obj->addCPE();
 
                 $this->reginsterCPE($data);
+
+                if(method_exists($class,'addCPEFunctions'))
+                {
+                    $function=$obj->addCPEFunctions();
+                    $this->reginsterCPEfunctions($obj->name, $function);
+                }
             } 
         }
 	}
@@ -53,11 +60,20 @@ class Hooks {
             return false;
     }
 
-    ///
     public function reginsterCPE($name)
     {
         $this->cpe[$name]= TRUE;
     }  
+
+    public function reginsterCPEfunctions($name, $data)
+    {
+        $this->cpefunctions[$name]=$data;
+    }  
+
+    public function getCPEfunctions($name)
+    {
+        return $this->cpefunctions[$name];
+    }
 
     public function existsCPE($name)
     {

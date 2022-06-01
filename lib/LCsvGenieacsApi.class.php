@@ -85,7 +85,9 @@ class LCsvGenieacsApi implements LCsvGenieacsApiInterface {
 	{
 		$data=array('_id'=>urlencode($id).':default');
 		$action = 'faults/?query='.json_encode($data, JSON_HEX_QUOT);
-		return $this->GET($action);
+		$result = $this->GET($action);
+
+        return $result;
 	}
 
 	public function GetFiles()

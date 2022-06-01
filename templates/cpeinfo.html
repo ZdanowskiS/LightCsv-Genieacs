@@ -107,6 +107,9 @@ Configure 'downloadurl'
 {/if}
 <button type="button" value="GetDownloadSpeed" onclick="action(this)">Get download reasult</button>
 <p id='downloadresult'></p>
+{foreach from=$cpefunctions key=$name item=$function}
+<button type="button" value="{$name}" onclick="test(this)">{$name}</button>
+{/foreach}
 <h4>Test functions:</h4>
 <TABLE class='hide' width="100%">
     <TR>

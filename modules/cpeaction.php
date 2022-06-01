@@ -12,6 +12,7 @@ if($classexists)
 {
     $classname=$classname.'CPE';
     $CPE = new $classname($LAPI,$id);
+    $functions=$hooks->getCPEfunctions($CPE->name);
 }
 
 switch($action){
@@ -49,7 +50,7 @@ switch($action){
         if($test)foreach($test as $name =>$item)
         {
             $result.='<TR>';
-            $result.=sprintf('<TD><I>%s</I></TD><TD>%s</TD><TD>%s</TD><TD>%s</TD><TD>%s</TD>',$name,$item['_timestamp'],$item['_type'],$item['_writable'],$item['_value']);
+            $result.=sprintf('<TD title="%s"><I>%s</I></TD><TD>%s</TD><TD>%s</TD><TD>%s</TD><TD>%s</TD>',$item['branch'],$name,$item['_timestamp'],$item['_type'],$item['_writable'],$item['_value']);
             $result.='</TR>';
         }
         $result.='<TABLE>';
@@ -66,6 +67,13 @@ switch($action){
     case 'SendConfig':
         $CPE->ExecuteAction();
         echo "reload";
+    break;
+    case array_key_exists($action, $functions):
+
+        $functionname=$functions[$action]['function'];
+        $result=$CPE->$functionname();
+
+        echo $result;
     break;
 	default:
 		return NULL;

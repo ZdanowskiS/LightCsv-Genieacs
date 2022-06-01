@@ -1,7 +1,7 @@
 <?php
 function getBranch($name, $branch)
 {
-    return $branch[$name];
+    return (array_key_exists($name, $branch) ? $branch[$name] : '');
 }
 $id=$_GET['id'];
 
@@ -15,10 +15,12 @@ if($classexists)
 {
     $classname=$classname.'CPE';
     $CPE = new $classname($LAPI,$id);
+
+    $smarty->assign('cpefunctions', $hooks->getCPEfunctions($CPE->name));
 }
 
 $device[0]['DeviceID']=array('Manufacturer' => array ( '_value' => $device[0]['_deviceId']['_Manufacturer']),
-                                        'ProductClass' => array ( '_value' => $device[0]['_deviceId']['_ProductClass']),
+                                'ProductClass' => array ( '_value' => $device[0]['_deviceId']['_ProductClass']),
                                         'SerialNumber' => array ( '_value' => $device[0]['_deviceId']['_SerialNumber']));
 
 $cpeinfo=$CPE->GetDeviceSummary($device);
@@ -34,7 +36,8 @@ if(file_exists($CONFIG['general']['cpedir'].$filename))
         $tree=explode(".",$task['param']);
         foreach($tree as $name)
         {
-            $branch = getBranch($name, $branch);
+            if(is_array($branch))
+                $branch = getBranch($name, $branch);
         }
         $config[$task['name']]=$branch['_value'];
     }
@@ -52,10 +55,11 @@ foreach($presets as $key => $preset)
         $tree=explode(".",$string);
         foreach($tree as $name)
         {
-            $branch = getBranch($name, $branch);
+            if(is_array($branch))
+                $branch = getBranch($name, $branch);
         }
 
-        if($branch['_value'])
+        if(is_array($branch) && array_key_exists('_value', $branch))
             $map[$string]=$branch['_value'];
 
     }

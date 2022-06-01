@@ -110,6 +110,24 @@ class LCsvGenieacs implements LCsvGenieacsInterface {
             return FALSE;
 
     }
+
+    public function getTemplateList()
+    {
+        global $CONFIG;
+        $files = scandir($CONFIG['general']['templatedir']);
+
+        foreach($files as $file)
+        {
+            if($file!='.' && $file!='..')
+            {
+                $id=str_replace('.csv','',$file);
+
+                $templates[]=array('id' =>$id,
+                    'file' => $file);
+            }
+        }
+        return $templates;
+    }
 }
 
 ?>

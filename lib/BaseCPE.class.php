@@ -31,11 +31,18 @@ class BaseCPE extends LCPE{
                                         'VLANID' => 'InternetGatewayDevice.Layer2Bridging.Bridge.1.VLAN.1.VLANID',
                                         )
 							);
+
 	public function __construct(&$connection, $deviceid){
 
 		$this->connection=&$connection;
 		$this->deviceid=$deviceid;
 	}
+
+    public function LGetDeviceById()
+    {
+         return $this->connection->GetDeviceById($this->deviceid);
+
+    }
 
 	private function isJSON($data)
 	{
@@ -85,7 +92,7 @@ class BaseCPE extends LCPE{
 
 	public function getBranch($name, $branch)
 	{
-    	return $branch[$name];
+        return (array_key_exists($name, $branch) ? $branch[$name] : '');
 	}
 
 	public function testModel($function)
@@ -100,7 +107,7 @@ class BaseCPE extends LCPE{
 
 		if(!is_array($error))
 		{
-			$device=$this->GetDeviceById($this->deviceid);
+			$device=$this->GetDeviceById();
 			foreach($this->data_model[$function] as $key => $param)
 			{
 				$tree=$device[0];
@@ -108,8 +115,10 @@ class BaseCPE extends LCPE{
 
         		foreach($branch as $name)
         		{
-            		$tree = $this->getBranch($name, $tree);
+                    if(is_array($tree))
+            		    $tree = $this->getBranch($name, $tree);
         		}
+                $tree['branch']=$param;
         		$result[$key]=$tree;
 			}
 		}

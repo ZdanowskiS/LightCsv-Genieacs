@@ -1,5 +1,7 @@
 <?php
 
+$LCSV= new LCsvGenieacs();
+
 if($_FILES)
 {
     $target=$CONFIG['general']['cpedir'].$_FILES['confFile']['name'];
@@ -12,7 +14,6 @@ if($_FILES)
 }
 elseif($_GET['action']=='create')
 {
-
     if($_POST['devid'])
         $filename=$_POST['devid'];
     else
@@ -51,6 +52,7 @@ $smarty->assign('Name', 'New File');
 
 $smarty->assign('apinamelist', $CONFIG['general']['apinamelist']);
 $smarty->assign('namelist', $namelist);
+$smarty->assign('templatelist', $LCSV->getTemplateList());
 
 $smarty->assign('error', $error);
 $smarty->display('fileadd.html');

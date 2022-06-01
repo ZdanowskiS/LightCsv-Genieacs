@@ -1,20 +1,9 @@
 <?php 
 
-$files = scandir($CONFIG['general']['templatedir']);
-
-foreach($files as $file)
-{
-    if($file!='.' && $file!='..')
-    {
-        $id=str_replace('.csv','',$file);
-
-        $templates[]=array('id' =>$id,
-                    'file' => $file);
-    }
-}
+$LCSV= new LCsvGenieacs();
 
 $smarty->assign('Name', 'Template List');
-$smarty->assign('templates', $templates);
+$smarty->assign('templates', $LCSV->getTemplateList());
 $smarty->display('templatelist.html');
 
 ?>

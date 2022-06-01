@@ -5,6 +5,18 @@ function setdevid(v)
 	if(v.value!=0)
 		document.getElementById('devid').value = v.value;
 }
+
+function settemplate(v)
+{
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("GET", "?m=ajax&action=gettemplate&in="+v.value);
+
+    xhttp.onload = function() {
+        document.getElementById("configuration").innerHTML =
+        this.responseText;
+    }
+    xhttp.send();
+}
 </script>
 
 <form action="?m=fileadd" method="post" enctype="multipart/form-data">
@@ -25,6 +37,12 @@ function setdevid(v)
         </TD>
         <TD>
             <input type="text" name="devid" id="devid" placeholder="XXXXX-YYY-XXXXXXXXXXXX" size="32" title="">
+		Template :<SELECT size="1" name="templatelist" onchange="settemplate(this)">
+            	    <OPTION VALUE="0">Select</OPTION>
+					{foreach from=$templatelist key=key item=item}{
+           			    <OPTION value="{$item.file}">{$item.id}</OPTION>
+					{/foreach}
+				</SELECT>
 		{if $apinamelist}
 		Unknown CPE:<SELECT size="1" name="idlist" onchange="setdevid(this)">
             	    <OPTION VALUE="0">Select</OPTION>
@@ -33,6 +51,7 @@ function setdevid(v)
 					{/foreach}
 				</SELECT>
 		{/if}
+
         </TD>
     </TR>
     <TR>
@@ -40,7 +59,7 @@ function setdevid(v)
             Configuration:
         </TD>
         <TD>
-            <textarea name="configuration" placeholder="setssid;setParameterValues;parameterNames;InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID;testSSID" rows="10" cols="150">{$file}</textarea>
+            <textarea name="configuration" id="configuration" placeholder="setssid;setParameterValues;parameterNames;InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID;testSSID" rows="10" cols="150">{$file}</textarea>
         </TD>
     </TR>
     <TR>
