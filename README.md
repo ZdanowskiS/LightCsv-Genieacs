@@ -1,10 +1,10 @@
 # LightCsv-Genieacs
 Light CSV to Genieacs
 
-LightCSV can be used to store CPE configurations and to manage CPE. It also offers some of GenieACS user interface functions and adds new ones:
+LightCSV can be used to store CPE configurations and to manage those CPE. It offers some of GenieACS user interface functions and adds new ones:
 1. Testing few selected TR-098 data model functions
 2. Testing download speed
-3. Shows matching presets to selected CPE
+3. Shows presets matching selected CPE
 
 Functionality is concentrated on managing CPE, not necessary on configuring whole GeniaACS.
 
