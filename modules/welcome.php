@@ -6,11 +6,10 @@ if($action=='del')
 {
 	$marks=(array_key_exists('marks', $_POST) ? $_POST['marks']: '');
 
-	if($marks)foreach($marks as $key => $file)
+	if($marks)foreach($marks as $key => $id)
 	{
-		unlink($CONFIG['general']['cpedir'].$file);
+		$STORAGE->deleteCPE($id);
 	}
-
 }
 
 

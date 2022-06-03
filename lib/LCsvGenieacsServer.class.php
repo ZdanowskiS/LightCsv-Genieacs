@@ -1,13 +1,24 @@
 <?php
 
-class LCsvGenieacsServer extends LCsvGenieacs {
+class LCsvGenieacsServer {
 
 	private $method;
 	private $uri;
 	private $token;
 	private $id;
 
-    private $hostid;
+    public $storage;
+    
+	public function __construct() { 
+    global $CONFIG;
+
+        if(array_key_exists('storageclass',$CONFIG['general']))
+            $storagename=$CONFIG['general']['storageclass'];
+        else
+            $storagename= 'LCsvStorageFile';
+
+        $this->storage= new $storagename();
+	}
 
     public static function addServer()
     {
@@ -15,6 +26,17 @@ class LCsvGenieacsServer extends LCsvGenieacs {
                         'function' => 'execute',
                         'name' => 'genieacs');
         return $result;
+    }
+
+    public function getHostByToken($token)
+    {
+        global $CONFIG;
+
+        if($CONFIG['general']['token']==$token)
+            return TRUE;
+        else
+            return FALSE;
+
     }
 
 	public function execute($data)
@@ -89,8 +111,8 @@ class LCsvGenieacsServer extends LCsvGenieacs {
 		switch($this->uri) {
 			case 'actionnodeadd':
 
-                $this->renameCPE($input->{'serial'},$input->{'cpeid'});
-                $tasklist = $this->GetActionTasks($input->{'cpeid'});
+                $this->storage->renameCPE($input->{'serial'},$input->{'cpeid'});
+                $tasklist = $this->storage->GetActionTasks($input->{'cpeid'});
 
 			    return json_encode($tasklist);
             break;

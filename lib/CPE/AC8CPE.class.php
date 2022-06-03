@@ -36,18 +36,12 @@ class AC8CPE extends BaseCPE{
                                         )
 							);
 
-	public function __construct(&$connection=null, $deviceid=null){
-
-		$this->connection=&$connection;
-		$this->deviceid=$deviceid;
-	}
-
-    public function addCPE()
+    static function addCPE()
     {
         return 'AC8';
     }
 
-    public function addCPEFunctions()
+    static function addCPEFunctions()
     {
         $result['GetAssociatedDevices']=array('name' => 'GetAssociatedDevices',
                         'function' => 'getAssociatedDevices');

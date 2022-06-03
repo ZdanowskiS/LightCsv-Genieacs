@@ -10,14 +10,14 @@
         <TD><a href="?m=fileedit&id={$device.urlid}" title="Edit file">{$device.file}</a></TD>
         <TD><a href="?m=reboot&id={$device.urlid}" title="Reboot CPE"> {if $device.reboottime}{$device.reboottime}{else}Reboot{/if}</a></TD>
         <TD align="center"><a href="?m=cpeconfigure&id={$device.urlid}" title="Run configuration from file">-></a></TD>
-        <TD align="center"><a href="?m=filedel&file={$device.urlfile}" title="Delete file">X</a></TD>
-		 <TD align="center"><INPUT TYPE="checkbox" NAME="marks[{$device.file}]" VALUE="{$device.urlfile}" class="mark">
+        <TD align="center"><a href="?m=filedel&id={$device.urlid}" title="Delete file">X</a></TD>
+		 <TD align="center"><INPUT TYPE="checkbox" NAME="marks[{$device.urlid}]" VALUE="{$device.urlid}" class="mark">
     </TR>
 {/foreach}
 <TR>
 	<TD colspan="5" align="right">
 		<button type="button" onclick="delfile()">Delete files</button> 
-		<INPUT TYPE="checkbox" NAME="marks[{$device.file}]" VALUE="" onclick="mark()" title="Revert checked">
+		<INPUT TYPE="checkbox" NAME="marks[]" VALUE="" onclick="mark()" title="Revert checked">
 	</TD>
 </TR>
 </TABLE>

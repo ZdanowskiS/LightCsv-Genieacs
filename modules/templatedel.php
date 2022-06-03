@@ -1,6 +1,6 @@
 <?php
 
-if(!unlink($CONFIG['general']['templatedir'].$_GET['file']))
+if(!$STORAGE->deleteTemplate($_GET['id']))
 {
     echo "Could't remove file. Check privileges.";
     die();

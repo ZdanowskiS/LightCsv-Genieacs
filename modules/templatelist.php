@@ -1,6 +1,6 @@
 <?php 
 
-$LCSV= new LCsvGenieacs();
+$LCSV= new LCsvGenieacs($STORAGE);
 
 $smarty->assign('Name', 'Template List');
 $smarty->assign('templates', $LCSV->getTemplateList());

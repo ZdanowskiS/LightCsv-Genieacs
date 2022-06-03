@@ -1,6 +1,6 @@
 <?php
 
-if(!unlink($CONFIG['general']['cpedir'].$_GET['file']))
+if(!$STORAGE->deleteCPE($_GET['id']))
 {
     echo "Could't remove file. Check privileges.";
     die();

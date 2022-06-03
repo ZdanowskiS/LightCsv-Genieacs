@@ -5,7 +5,7 @@ function getBranch($name, $branch)
 }
 $id=$_GET['id'];
 
-$CPE = new BaseCPE($LAPI,$id);
+$CPE = new BaseCPE($LAPI,$STORAGE,$id);
 
 $device=$CPE->GetDeviceById();
 $classname=$device[0]['_deviceId']['_ProductClass'];
@@ -14,7 +14,7 @@ $classexists=$hooks->existsCPE($classname);
 if($classexists)
 {
     $classname=$classname.'CPE';
-    $CPE = new $classname($LAPI,$id);
+    $CPE = new $classname($LAPI,$STORAGE,$id);
 
     $smarty->assign('cpefunctions', $hooks->getCPEfunctions($CPE->name));
 }
@@ -28,7 +28,7 @@ $cpeinfo=$CPE->GetDeviceSummary($device);
 $filename=$id.'.csv';
 if(file_exists($CONFIG['general']['cpedir'].$filename))
 {
-    $tasks=$CPE->getActionTasks($id);
+    $tasks=$CPE->storage->getActionTasks($id);
 
     if($tasks)foreach($tasks as $key => $task)
     {

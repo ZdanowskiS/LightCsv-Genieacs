@@ -14,23 +14,21 @@ class Hooks {
         {
             if(method_exists($class,"addServer"))
             {
-                $obj = new $class;
-                $data=$obj->addServer();
+                $data=$class::addServer();
 
                 $this->reginsterServer($data);
             }
 
             if(method_exists($class,'addCPE'))
             {
-                $obj = new $class;
-                $data=$obj->addCPE();
+                $name=$class::addCPE();
 
-                $this->reginsterCPE($data);
+                $this->reginsterCPE($name);
 
                 if(method_exists($class,'addCPEFunctions'))
                 {
-                    $function=$obj->addCPEFunctions();
-                    $this->reginsterCPEfunctions($obj->name, $function);
+                    $function=$class::addCPEFunctions();
+                    $this->reginsterCPEfunctions($name, $function);
                 }
             } 
         }

@@ -2,9 +2,6 @@
 
 class BaseCPE extends LCPE{
 
-	public $connection;
-	public $deviceid;
-
 	public $data_model=array('WANPPP' => array(
 										'Enable' => 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Enable',
 										'Username' => 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Username',
@@ -32,16 +29,9 @@ class BaseCPE extends LCPE{
                                         )
 							);
 
-	public function __construct(&$connection, $deviceid){
-
-		$this->connection=&$connection;
-		$this->deviceid=$deviceid;
-	}
-
-    public function LGetDeviceById()
+    public function GetDeviceById()
     {
          return $this->connection->GetDeviceById($this->deviceid);
-
     }
 
 	private function isJSON($data)

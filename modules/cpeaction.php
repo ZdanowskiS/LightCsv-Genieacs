@@ -3,7 +3,7 @@
 $action=$_GET['action'];
 $id=$_GET['id'];
 
-$CPE = new BaseCPE($LAPI,$id);
+$CPE = new BaseCPE($LAPI,$STORAGE,$id);
 $device=$CPE->GetDeviceById();
 $classname=$device[0]['_deviceId']['_ProductClass'];
 
@@ -11,7 +11,7 @@ $classexists=$hooks->existsCPE($classname);
 if($classexists)
 {
     $classname=$classname.'CPE';
-    $CPE = new $classname($LAPI,$id);
+    $CPE = new $classname($LAPI,$STORAGE,$id);
     $functions=$hooks->getCPEfunctions($CPE->name);
 }
 

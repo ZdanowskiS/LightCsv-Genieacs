@@ -30,6 +30,9 @@ require_once "./lib/LCsvGenieacsApiInterface.php";
 require_once "./lib/LCsvGenieacsInterface.php";
 require_once "./lib/LCPEInterface.php";
 
+require_once "./lib/LCsvStorageInterface.php";
+require_once "./lib/LCsvStorageFile.class.php";
+
 require_once "./lib/LCsvGenieacs.class.php";
 require_once "./lib/LCsvCache.class.php";
 require_once "./lib/LCsvGenieacsApi.class.php";
@@ -55,6 +58,13 @@ else
 {
     if($CONFIG['cache']['enable'])
         $cache=new LCsvCache();
+
+    if(array_key_exists('storageclass',$CONFIG['general']))
+        $storagename=$CONFIG['general']['storageclass'];
+    else
+        $storagename= 'LCsvStorageFile';
+
+    $STORAGE= new $storagename();
 
     $LAPI=new LCsvGenieacsApi($CONFIG['general']['ip'],$cache);
     if(file_exists('smarty/libs/Smarty.class.php'))

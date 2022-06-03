@@ -1,6 +1,6 @@
 <?php
 
-$LCSV= new LCsvGenieacs();
+$LCSV= new LCsvGenieacs($STORAGE);
 
 if($_FILES)
 {
@@ -15,28 +15,26 @@ if($_FILES)
 elseif($_GET['action']=='create')
 {
     if($_POST['devid'])
-        $filename=$_POST['devid'];
+        $devid=$_POST['devid'];
     else
         $error='Device ID is required.';
 
-    if(!$error && !preg_match('/^.*csv/',$_POST['devid']))
+    if(!$error && !preg_match('/^.*csv/',$devid))
         $filename=$filename.'.csv';
 
-    if(!$error && file_exists($CONFIG['general']['cpedir'].$filename))
+    if(!$error && $LCSV->existsCPE($devid))
         $error='Configuration file exists.';
 
     if(!$error)
     {
-        file_put_contents($CONFIG['general']['cpedir'].$filename, $_POST['configuration']);
-
+        $LCSV->saveCPE($_POST['devid'], $_POST['configuration']);
         header('Location: ?m=fileedit&id='.$_POST['devid']);
     }
 }
 
 if($CONFIG['general']['apinamelist'])
 {
-	$acsfiles=scandir($CONFIG['general']['cpedir']);
-
+    $acsfiles=$LCSV->getCPEList();
 	$cpelist = $LAPI->GetAllDevices();
 
 	if($cpelist)foreach($cpelist as $cpe)

@@ -6,7 +6,7 @@
 {foreach from=$templates item=template}
     <TR>
         <TD><a href="?m=templateedit&id={$template.id}" title="Edit file">{$template.file}</a></TD>
-        <TD align="center"><a href="?m=templatedel&file={$template.file}" title="Delete template">X</a></TD>
+        <TD align="center"><a href="?m=templatedel&id={$template.id}" title="Delete template">X</a></TD>
     </TR>
 {/foreach}
 </TABLE>

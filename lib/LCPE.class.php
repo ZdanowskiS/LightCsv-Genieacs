@@ -1,15 +1,17 @@
 <?php
 
-class LCPE extends LCsvGenieacs implements LCPEInterface{
+class LCPE implements LCPEInterface{
 
     protected $deviceid;
     protected $node;
 
     public $connection;
+    public $storage;
 
-	public function __construct(&$connection,$deviceid=0) {
+	public function __construct(&$connection,&$storage,$deviceid=0) {
 
 		$this->connection= &$connection;
+		$this->storage= &$storage;
 
         if($deviceid)
             $this->init($deviceid);
@@ -52,12 +54,6 @@ class LCPE extends LCsvGenieacs implements LCPEInterface{
        $result = $this->connection->GetDeviceById($this->deviceid);
 
        return $result;
-    }
-
-    public function test()
-    {
-        return$this->connection->GetDeviceById($this->deviceid);
-        return 'test';
     }
 
     public function GetFaults()
@@ -106,7 +102,7 @@ class LCPE extends LCsvGenieacs implements LCPEInterface{
 
     public function ExecuteAction()
     {
-        $task_array = $this->getActionTasks($this->deviceid);
+        $task_array = $this->storage->getActionTasks($this->deviceid);
 
 		if($task_array)foreach($task_array as $task)
 		{
